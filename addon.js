@@ -1,9 +1,12 @@
 var test = require('tap').test;
-var addon = require('bindings')('addon');
+var Obj = require('bindings')('addon');
 var heapdump = require('heapdump');
 
+var obj = new Obj();
+
 function fn() {
-  new addon().create()();
+  var callback = obj.create();
+  console.log(callback());
 }
 
 test('memory', function(t) {
@@ -17,11 +20,10 @@ test('memory', function(t) {
         fn();
 
         if (i % (max / 10) == 0) {
-            if (gc) gc();
+            gc();
 
             var currentHeapSize = process.memoryUsage()['heapUsed'];
 
-            // Print some progress, so slow build bots don't timeout.
             t.comment(i);
 
             if (lastHeapSize == 0) {
@@ -31,7 +33,7 @@ test('memory', function(t) {
             heapGrowth = heapGrowth + currentHeapSize - lastHeapSize;
             lastHeapSize = currentHeapSize;
 
-            heapdump.writeSnapshot();
+            // heapdump.writeSnapshot();
         }
 
         if (++i == max) {
