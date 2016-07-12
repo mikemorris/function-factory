@@ -1,4 +1,5 @@
 #include <nan.h>
+#include <iostream>
 
 class Obj : public Nan::ObjectWrap {
 public:
@@ -21,10 +22,16 @@ void Obj::MyFunction(const Nan::FunctionCallbackInfo<v8::Value>& info) {
 }
 
 void Obj::CreateFunction(const Nan::FunctionCallbackInfo<v8::Value>& info) {
+  // Enter a new v8::Context to prevent leaking v8::FunctionTemplate
+  v8::Local<v8::Context> context = v8::Context::New(v8::Isolate::GetCurrent());
+  v8::Context::Scope scope(context);
+
   Obj* obj = Nan::ObjectWrap::Unwrap<Obj>(info.This());
 
   v8::Local<v8::FunctionTemplate> tpl = Nan::New<v8::FunctionTemplate>(MyFunction, Nan::New<v8::External>(obj));
   v8::Local<v8::Function> fn = tpl->GetFunction();
+
+  std::cout << obj->num << std::endl;
 
   info.GetReturnValue().Set(fn);
 }

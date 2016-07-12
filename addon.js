@@ -24,8 +24,6 @@ test('memory', function(t) {
 
             var currentHeapSize = process.memoryUsage()['heapUsed'];
 
-            t.comment(i);
-
             if (lastHeapSize == 0) {
                 lastHeapSize = currentHeapSize;
             }
