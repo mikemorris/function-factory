@@ -12,7 +12,7 @@ function fn() {
 test('memory', function(t) {
     var i = 0;
     var max = 10000;
-    var memoryMax = 15 * 1024 * 1024;
+    var memoryMax = 800 * 1024; // ~800k
     var heapGrowth = 0;
     var lastHeapSize = 0;
 
